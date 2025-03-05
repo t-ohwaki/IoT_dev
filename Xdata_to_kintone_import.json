@@ -1,0 +1,169 @@
+[
+    {
+        "id": "8d6fb87e6f1a5077",
+        "type": "exec",
+        "z": "53bd2d52069614fb",
+        "command": "Desktop/cli-kintone-macos/cli-kintone record import --base-url https://cfdlklpfo364.cybozu.com --app 17 --api-token FGn1s9MbzyyfXDlDdEhuI60whP9QVGP0qIK9YrVY --file-path Desktop/cli-kintone-macos/注番データ登録.csv  --update-key 注文番号",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "kintone へ　import",
+        "x": 840,
+        "y": 180,
+        "wires": [
+            [
+                "532315e21dbadbf3"
+            ],
+            [
+                "0d098e582cbe4486"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3247e218f899d4c1",
+        "type": "file",
+        "z": "53bd2d52069614fb",
+        "name": "更新用ファイル作成",
+        "filename": "Desktop/cli-kintone-macos/注番データ登録.csv",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 540,
+        "y": 180,
+        "wires": [
+            [
+                "8d6fb87e6f1a5077"
+            ]
+        ]
+    },
+    {
+        "id": "532315e21dbadbf3",
+        "type": "debug",
+        "z": "53bd2d52069614fb",
+        "name": "debug 28",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1090,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "0d098e582cbe4486",
+        "type": "debug",
+        "z": "53bd2d52069614fb",
+        "name": "debug 46",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1090,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "74fce11bc80eb174",
+        "type": "csv",
+        "z": "53bd2d52069614fb",
+        "name": "",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "once",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "注文番号,図番,品名,発注日,注文納期,単価,注文数量,納入数量",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 330,
+        "y": 180,
+        "wires": [
+            [
+                "3247e218f899d4c1"
+            ]
+        ]
+    },
+    {
+        "id": "948eafc9dabada0f",
+        "type": "function",
+        "z": "53bd2d52069614fb",
+        "name": "注番マスター項目抽出",
+        "func": "var S1_WK = [];             // 作番マスターimportデータ\n//var S2_WK = [];             // 製品マスターimportデータ\nvar x = [];\nvar y = [];\n//var z = [];\n//var z_no = [];\nvar rows = msg.payload.split('\\n');\nfor (var i = 1; i < rows.length; ++i) {\n    rows[i] = rows[i].replace(/\"/g, '');\n    x = rows[i].trim().split(',');\n    if (x[0] == '' ||x[1] == '' || x[2] == '') {\n        continue;\n    }\n    var 発注日 = x[4].substr(0, 4) + \"-\" + x[4].substr(4, 2) + \"-\" + x[4].substr(6, 2) ;\n    var 注文納期 = x[5].substr(0, 4) + \"-\" + x[5].substr(4, 2) + \"-\" + x[5].substr(6, 2);\n    y[i] = [x[1], x[2], x[3], 発注日, 注文納期,x[6], x[8], x[9]]; // 注文番号,図番,品名,発注日,注文納期,単価,注文数量,納入数量//\n    S1_WK.push(y[i]);\n //   z[i] = [x[3], x[4], x[5], x[8]]; // 得意先コード,品番,品名,材質\n //   if (z_no.indexOf(x[4]) == -1) {\n //       S2_WK.push(z[i]);\n //       z_no.push(x[4]);\n //   }\n}\nreturn [{ payload: S1_WK }, { payload: null }];\n\n\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "74fce11bc80eb174"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a77cb11e38d70896",
+        "type": "file in",
+        "z": "53bd2d52069614fb",
+        "name": "注番データ読込み",
+        "filename": "Desktop/cli-kintone-macos/注番データkawai.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "Shift_JIS",
+        "allProps": false,
+        "x": 460,
+        "y": 80,
+        "wires": [
+            [
+                "948eafc9dabada0f"
+            ]
+        ]
+    },
+    {
+        "id": "720fe218b8b76e9e",
+        "type": "inject",
+        "z": "53bd2d52069614fb",
+        "name": "マスター更新　起動",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "a77cb11e38d70896"
+            ]
+        ]
+    }
+]
