@@ -1,0 +1,764 @@
+[
+    {
+        "id": "d87ed882687178f3",
+        "type": "tab",
+        "label": "Edge AI estimation flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8d71206a44235f3b",
+        "type": "image",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "width": "120",
+        "data": "payload",
+        "dataType": "msg",
+        "thumbnail": false,
+        "active": true,
+        "pass": false,
+        "outputs": 0,
+        "x": 940,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "5ea866d827e9bdfd",
+        "type": "ui_button",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "group": "fe7e44cf43ebd754",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "<font size = 10>START",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 440,
+        "y": 140,
+        "wires": [
+            [
+                "221edc46e87ac191",
+                "37912d956d0aa2f2"
+            ]
+        ]
+    },
+    {
+        "id": "0be9b732da4bd56e",
+        "type": "ui_template",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "name": "",
+        "order": 4,
+        "width": 10,
+        "height": 10,
+        "format": "<div>\n    <img src=\"data:image/png;base64,{{msg.payload}}\">\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1040,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "221edc46e87ac191",
+        "type": "exec",
+        "z": "d87ed882687178f3",
+        "command": "/home/image_capture_v.sh",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "10秒１回転で4枚撮像",
+        "x": 810,
+        "y": 140,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "619323925ae3801f",
+        "type": "watch",
+        "z": "d87ed882687178f3",
+        "name": "画像ファイル監視",
+        "files": "./image_captured/",
+        "recursive": "",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "2706593e6ac4fb88"
+            ]
+        ]
+    },
+    {
+        "id": "2706593e6ac4fb88",
+        "type": "change",
+        "z": "d87ed882687178f3",
+        "name": "画像filename設定",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "filename",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 320,
+        "wires": [
+            [
+                "c6608099f38d5262",
+                "7884f0201ebf1c05"
+            ]
+        ]
+    },
+    {
+        "id": "c6608099f38d5262",
+        "type": "file in",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 440,
+        "y": 320,
+        "wires": [
+            [
+                "b8e69aacc98d92f1"
+            ]
+        ]
+    },
+    {
+        "id": "b8e69aacc98d92f1",
+        "type": "jimp-image",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "buf",
+        "parameter1": "795",
+        "parameter1Type": "num",
+        "parameter2": "500",
+        "parameter2Type": "num",
+        "parameter3": "520",
+        "parameter3Type": "num",
+        "parameter4": "520",
+        "parameter4Type": "num",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 4,
+        "jimpFunction": "crop",
+        "selectedJimpFunction": {
+            "name": "crop",
+            "fn": "crop",
+            "description": "crop to the given region",
+            "parameters": [
+                {
+                    "name": "x",
+                    "type": "num",
+                    "required": true,
+                    "hint": "the x coordinate to crop form"
+                },
+                {
+                    "name": "y",
+                    "type": "num",
+                    "required": true,
+                    "hint": "the y coordinate to crop form"
+                },
+                {
+                    "name": "w",
+                    "type": "num",
+                    "required": true,
+                    "hint": "the width of the crop region"
+                },
+                {
+                    "name": "h",
+                    "type": "num",
+                    "required": true,
+                    "hint": "the height of the crop region"
+                }
+            ]
+        },
+        "x": 630,
+        "y": 320,
+        "wires": [
+            [
+                "1fb125fa21da17f0",
+                "8d71206a44235f3b",
+                "b5475cbd2a63951c"
+            ]
+        ]
+    },
+    {
+        "id": "37bd9752d0957705",
+        "type": "ui_template",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "name": "",
+        "order": 5,
+        "width": 10,
+        "height": 10,
+        "format": "<div>\n    <img src=\"data:image/png;base64,{{msg.payload}}\">\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1040,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4be092fdbc5e7eb0",
+        "type": "ui_template",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "name": "",
+        "order": 8,
+        "width": 10,
+        "height": 10,
+        "format": "<div>\n    <img src=\"data:image/png;base64,{{msg.payload}}\">\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1040,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5122f12b9cc75eca",
+        "type": "ui_template",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "name": "",
+        "order": 9,
+        "width": 10,
+        "height": 10,
+        "format": "<div>\n    <img src=\"data:image/png;base64,{{msg.payload}}\">\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1040,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "39bcdfd424d6376e",
+        "type": "switch",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "property": "winNo",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 840,
+        "y": 480,
+        "wires": [
+            [
+                "0be9b732da4bd56e"
+            ],
+            [
+                "37bd9752d0957705"
+            ],
+            [
+                "4be092fdbc5e7eb0"
+            ],
+            [
+                "5122f12b9cc75eca"
+            ]
+        ]
+    },
+    {
+        "id": "37912d956d0aa2f2",
+        "type": "function",
+        "z": "d87ed882687178f3",
+        "name": "winNo flow変数初期化",
+        "func": "flow.set(\"winNo\", 0)\nflow.set(\"winNo2\", 0)",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "// ここに記述したコードは、ノードをデプロイした時に\n// 一度だけ実行されます。\nflow.set(\"winNo\",0)\nflow.set(\"winNo2\", 0)",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7884f0201ebf1c05",
+        "type": "function",
+        "z": "d87ed882687178f3",
+        "name": "winNo count up",
+        "func": "var num = flow.get(\"winNo\") ;\nnum = num + 1 ;\nflow.set(\"winNo\", num)",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// ここに記述したコードは、ノードをデプロイした時に\n// 一度だけ実行されます。\nflow.set(\"winNo\",0)",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e0d734bca8c197d2",
+        "type": "delay",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "12",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 550,
+        "y": 60,
+        "wires": [
+            [
+                "221edc46e87ac191",
+                "37912d956d0aa2f2"
+            ]
+        ]
+    },
+    {
+        "id": "6df08014260f1150",
+        "type": "function",
+        "z": "d87ed882687178f3",
+        "name": "製品セットの検出",
+        "func": "var range_string = msg.payload;\nvar range = parseInt(range_string);\nif (range >= 120)  {\n       if (range <= 130){\n            if (flow.get(\"camera_on\") == 0){\n                 msg.payload = {\"Range\":range};\n              flow.set(\"camera_on\",1);\n               return msg\n              }\n        }\n}\nif (range > 200) { flow.set(\"camera_on\", 0)}\nif (range < 50) { flow.set(\"camera_on\", 0)}\n\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "// ここに記述したコードは、ノードをデプロイした時に\n// 一度だけ実行されます。\nflow.set(\"camera_on\",0)",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 60,
+        "wires": [
+            [
+                "e0d734bca8c197d2"
+            ]
+        ]
+    },
+    {
+        "id": "4a6ac400e1bce03e",
+        "type": "serial in",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "serial": "d4717df2565548c5",
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "6df08014260f1150"
+            ]
+        ]
+    },
+    {
+        "id": "59d066d5971403cf",
+        "type": "switch",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "property": "winNo2",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 840,
+        "y": 740,
+        "wires": [
+            [
+                "cbe4cdecb13637bd"
+            ],
+            [
+                "487de1cad29bf51c"
+            ],
+            [
+                "ac2dd9dd3835a0f4"
+            ],
+            [
+                "170ad07916ed0a26"
+            ]
+        ]
+    },
+    {
+        "id": "cbe4cdecb13637bd",
+        "type": "ui_text",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "order": 2,
+        "width": 10,
+        "height": 1,
+        "name": "",
+        "label": "result",
+        "format": "<font size = 10>{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 1030,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "487de1cad29bf51c",
+        "type": "ui_text",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "order": 3,
+        "width": 10,
+        "height": 1,
+        "name": "",
+        "label": "result2",
+        "format": "<font size = 10>{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 1040,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "ac2dd9dd3835a0f4",
+        "type": "ui_text",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "order": 6,
+        "width": 10,
+        "height": 1,
+        "name": "",
+        "label": "result3",
+        "format": "<font size = 10>{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 1040,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "170ad07916ed0a26",
+        "type": "ui_text",
+        "z": "d87ed882687178f3",
+        "group": "fe7e44cf43ebd754",
+        "order": 7,
+        "width": 10,
+        "height": 1,
+        "name": "",
+        "label": "result4",
+        "format": "<font size = 10>{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 1040,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "402895e5782478bf",
+        "type": "exec",
+        "z": "d87ed882687178f3",
+        "command": "python3 ./Pytorch_Estima_x.py",
+        "addpay": "filename",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Python判定プログラム実行",
+        "x": 590,
+        "y": 740,
+        "wires": [
+            [
+                "59d066d5971403cf"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "28d13f689ea00b10",
+        "type": "file",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 740,
+        "y": 600,
+        "wires": [
+            [
+                "fd21612f2092f8ad",
+                "cd1ae092ee2646f3"
+            ]
+        ]
+    },
+    {
+        "id": "fd21612f2092f8ad",
+        "type": "debug",
+        "z": "d87ed882687178f3",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "b5475cbd2a63951c",
+        "type": "function",
+        "z": "d87ed882687178f3",
+        "name": "change filename",
+        "func": "var pass = \"./image_captured_crop/\"+msg.file;\nmsg.filename = pass;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 600,
+        "wires": [
+            [
+                "28d13f689ea00b10"
+            ]
+        ]
+    },
+    {
+        "id": "8de5bde0e2869582",
+        "type": "function",
+        "z": "d87ed882687178f3",
+        "name": "winNo2 count up",
+        "func": "var num = flow.get(\"winNo2\") ;\nnum = num + 1 ;\nflow.set(\"winNo2\", num)",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// ここに記述したコードは、ノードをデプロイした時に\n// 一度だけ実行されます。\nflow.set(\"winNo2\",0)",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cd1ae092ee2646f3",
+        "type": "delay",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 680,
+        "wires": [
+            [
+                "8de5bde0e2869582",
+                "402895e5782478bf"
+            ]
+        ]
+    },
+    {
+        "id": "1fb125fa21da17f0",
+        "type": "base64",
+        "z": "d87ed882687178f3",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 700,
+        "y": 480,
+        "wires": [
+            [
+                "39bcdfd424d6376e"
+            ]
+        ]
+    },
+    {
+        "id": "eb1a0e062090e601",
+        "type": "comment",
+        "z": "d87ed882687178f3",
+        "name": "赤外線センサーで起動",
+        "info": "",
+        "x": 130,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "5809427696020da7",
+        "type": "comment",
+        "z": "d87ed882687178f3",
+        "name": "START釦による起動",
+        "info": "",
+        "x": 420,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "e50297283ec61b75",
+        "type": "comment",
+        "z": "d87ed882687178f3",
+        "name": "画像の表示",
+        "info": "",
+        "x": 1030,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "d0b7fcfa8eac8240",
+        "type": "comment",
+        "z": "d87ed882687178f3",
+        "name": "判定結果の表示",
+        "info": "",
+        "x": 1010,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "fe7e44cf43ebd754",
+        "type": "ui_group",
+        "name": "デフォルト",
+        "tab": "3190fa62d4ed4a24",
+        "order": 1,
+        "disp": true,
+        "width": 20,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d4717df2565548c5",
+        "type": "serial-port",
+        "serialport": "/dev/ttyUSB0",
+        "serialbaud": "115200",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "3190fa62d4ed4a24",
+        "type": "ui_tab",
+        "name": "ホーム",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
